@@ -163,6 +163,11 @@ int found =0;
 
           }
           else
+          if(input[2]=='k' && input[3] == 'i'&& input[4]=='l' && input[5]=='l' && input[6] ==' ')
+          {
+            interrupt(0x21,11,input[7]-'0');
+          }
+          else
         interrupt(0x21,0,"Bad Command\0",0,0);
       }
   interrupt(0x21,0,"\r\n",0,0);

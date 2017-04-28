@@ -14,6 +14,7 @@ char get(int);
 void putInArray(char*,char*);
 void handleTimerInterrupt(int, int );
 void getModified(int);
+void killProcess(int);
 typedef struct {
 	int active;
 	int sp;
@@ -36,8 +37,8 @@ int main(){
 	makeTimerInterrupt();
 	makeInterrupt21();
 
-	interrupt(0x21, 4, "hello1\0", 0, 0);
-	interrupt(0x21, 4, "hello2\0", 0, 0);
+	interrupt(0x21, 4, "shell\0", 0, 0);
+	// interrupt(0x21, 4, "hello2\0", c0, 0);
 
 	while(1); /*hang up*/
 }
@@ -145,7 +146,11 @@ else{
 
 }
 
-
+void killProcess(int p){
+	setKernelDataSegment();
+	processTable[p].active = 0;
+	restoreDataSegment();
+}
 
 void printString(char* word){
 
@@ -307,6 +312,8 @@ void deleteFile(char* name){
 	else return;
 }
 
+
+
 void writeFile(char* name, char* buffer, int secNum){
 	char directory[512];
 	char map[512];
@@ -460,5 +467,6 @@ void handleInterrupt21(int ax, int bx, int cx, int dx){
 	else if(ax==8)writeFile(bx,cx,dx);
 	else if(ax==9)copy(bx,cx);
 	else if(ax==10)showDir();
+	else if(ax==11)killProcess(bx);
 	else printString("ERROR:Ma3leeeesh");
 }
