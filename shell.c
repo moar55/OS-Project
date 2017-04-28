@@ -34,7 +34,7 @@ int found =0;
        else
 	        if(input[2]=='e' && input[3] == 'x'&& input[4]=='e'&& input[5] =='c'&& input[6]=='u' && input[7]=='t' && input [8] == 'e'&& input[9] ==' ')
       {
-        interrupt(0x21,4,&input[10],0x2000,0);
+        interrupt(0x21,4,&input[10],0,0);
 
       }
       else{

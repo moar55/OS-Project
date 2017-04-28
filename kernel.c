@@ -36,12 +36,9 @@ int main(){
 	makeTimerInterrupt();
 	makeInterrupt21();
 
-	interrupt(0x21, 4, "hello2\0", 0, 0);
 	interrupt(0x21, 4, "hello1\0", 0, 0);
+	interrupt(0x21, 4, "hello2\0", 0, 0);
 
-
-	// interrupt(0x21, 4, "shell\0", 0x2000, 0);
-	//showDir();
 	while(1); /*hang up*/
 }
 
@@ -49,10 +46,14 @@ void handleTimerInterrupt(int segment, int sp){
 	int i;
 	int j;
 	char value [3];
+	setKernelDataSegment();
 	j = currentProcess+1;
-	value[1]='\0';
+	currentProcess = div(segment,0x1000)-2;
+	processTable[currentProcess].active=1;
+	processTable[currentProcess].sp = sp;
+	restoreDataSegment();
+
 	if(timer==100){
-		printhex();
 
 /* saving the sp doesn't seeem to work
 		setKernelDataSegment();
@@ -63,8 +64,9 @@ void handleTimerInterrupt(int segment, int sp){
 
 		timer =0;
 		for( i=0;i<7;i++){
+			setKernelDataSegment();
 			if(processTable[j].active){
-
+				restoreDataSegment();
 				segment = (j+2)*0x1000;
 				setKernelDataSegment();
 				sp = processTable[j].sp;
